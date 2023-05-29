@@ -5,12 +5,12 @@ name: pipeline
 
 steps:
 - name: build
-  image: docker
+  image: alpine
   commands:
   - echo "docker build"
 
 - name: push
-  image: docker
+  image: alpine
   commands:
   - echo "docker push"
 
