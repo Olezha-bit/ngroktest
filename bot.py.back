@@ -1,0 +1,37 @@
+import requests
+from telegram.ext import Updater, CommandHandler
+
+TOKEN = '5752269948:AAFY1pGjlKrYcm_GM8qTwCUFyQQPuviXVW4'
+API_KEY = 'fdfc8c30afc2dab61785a6476cf08b38'
+
+def start(update, context):
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Привет! Чтобы узнать погоду в Киеве, используйте команду /weather.")
+
+def get_weather(update, context):
+    url = f"http://api.openweathermap.org/data/2.5/weather?q=Kiev&appid={API_KEY}&units=metric"
+
+    response = requests.get(url)
+    data = response.json()
+
+    weather = data['weather'][0]['main']
+    temperature = data['main']['temp']
+    humidity = data['main']['humidity']
+    message = f"Погода в Киеве:\n\n{weather}\nТемпература: {temperature}°C\nВлажность: {humidity}%"
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+
+def main():
+    updater = Updater(token=TOKEN, use_context=True)
+    dispatcher = updater.dispatcher
+
+    start_handler = CommandHandler('start', start)
+    weather_handler = CommandHandler('weather', get_weather)
+
+    dispatcher.add_handler(start_handler)
+    dispatcher.add_handler(weather_handler)
+
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
